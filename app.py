@@ -72,6 +72,7 @@ def run_query():
         try:
             query = conn.execute(query)
             cols = [column[0] for column in query.description]
+            st.write(query.fetchall)
             results_df= pd.DataFrame.from_records(
                 data = query.fetchall(), 
                 columns = cols
