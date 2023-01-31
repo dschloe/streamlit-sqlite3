@@ -72,7 +72,6 @@ def run_query():
         try:
             query = conn.execute(query)
             cols = [column[0] for column in query.description]
-            st.write(type(query.fetchall()))
             results_df= pd.DataFrame.from_records(
                 data = query.fetchall(), 
                 columns = cols
@@ -83,11 +82,15 @@ def run_query():
 
     st.sidebar.markdown("# Run Query")
 
-page_names_to_funcs = {
-    "Create Database": create_database,
-    "Upload Data": upload_data,
-    "Run Query": run_query,
-}
+def main():
+    page_names_to_funcs = {
+        "Create Database": create_database,
+        "Upload Data": upload_data,
+        "Run Query": run_query,
+    }
 
-selected_page = st.sidebar.selectbox("Select a page", page_names_to_funcs.keys())
-page_names_to_funcs[selected_page]()
+    selected_page = st.sidebar.selectbox("Select a page", page_names_to_funcs.keys())
+    page_names_to_funcs[selected_page]()
+
+if __name__ == '__main__':
+    main()
