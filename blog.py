@@ -19,7 +19,7 @@ def add_post(conn):
             cursor.execute("INSERT INTO posts (title, content) VALUES (?,?)", (title, content))
             conn.commit()
             st.success("Post::'{}' Saved".format(title))
-
+            # 참고 : https://github.com/Jcharis/Streamlit_DataScience_Apps/blob/master/Simple_CRuD_Blog_App_with_Streamlit/app.py
 
 # Edit a post
 def edit_post(conn, post_id):
