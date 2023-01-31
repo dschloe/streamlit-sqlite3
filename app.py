@@ -2,7 +2,7 @@ import sqlite3
 import streamlit as st
 import pandas as pd
 import os
-
+from blog import blog_main
 
 def create_connection(db_file):
     """ create a database connection to the SQLite database
@@ -87,6 +87,7 @@ def main():
         "Create Database": create_database,
         "Upload Data": upload_data,
         "Run Query": run_query,
+        "Blog App" : blog_main
     }
 
     selected_page = st.sidebar.selectbox("Select a page", page_names_to_funcs.keys())
