@@ -3,7 +3,18 @@ import sqlite3
 
 # Connect to SQLite database
 def connect_db():
-    return sqlite3.connect("data/blog.db")
+    conn = sqlite3.connect("data/blog.db")
+    return conn 
+
+def init_db():
+    conn = connect_db()
+    cursor = conn.cursor()
+
+    # Create table if it doesn't exist
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS posts (id INTEGER PRIMARY KEY, title TEXT, content TEXT)
+    ''')
+    conn.commit()
 
 # Add a new post
 def add_post(conn):
@@ -21,17 +32,6 @@ def add_post(conn):
             st.success("Post::'{}' Saved".format(title))
             # 참고 : https://github.com/Jcharis/Streamlit_DataScience_Apps/blob/master/Simple_CRuD_Blog_App_with_Streamlit/app.py
 
-# Edit a post
-def edit_post(conn, post_id):
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM posts WHERE id=?", (post_id,))
-    post = cursor.fetchone()
-    title = st.text_input("Title", post[1])
-    content = st.text_area("Content", post[2])
-    if st.button("Save"):
-        cursor.execute("UPDATE posts SET title=?, content=? WHERE id=?", (title, content, post_id))
-        conn.commit()
-
 # Delete a post
 def delete_post(conn, post_id):
     cursor = conn.cursor()
@@ -48,9 +48,6 @@ def view_posts(conn):
         st.write("Title: ", post[1])
         st.write("Content: ", post[2])
         st.write("Actions:")
-        edit_button = st.button("Edit", key=f"edit_button_{i}")
-        if edit_button:
-            edit_post(conn, post[0])
         delete_button = st.button("Delete", key=f"delete_button_{i}")
         if delete_button:
             delete_post(conn, post[0])
@@ -61,4 +58,8 @@ def blog_main():
     add_post(conn)
     st.write("")
     st.write("View all posts:")
-    view_posts(conn)
+    try:
+        view_posts(conn)
+    except Exception as e:
+        st.write(e)
+        init_db()
